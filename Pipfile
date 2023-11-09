@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask ="2.2.5"
+flask-sqlalchemy = "*"
+flask-restful = "*"
+flask-migrate = "*"
+sqlalchemy-serializer = "*"
+gunicorn = "*"
+pytest ="*"
+faker="*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
