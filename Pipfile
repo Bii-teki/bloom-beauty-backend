@@ -12,7 +12,7 @@ sqlalchemy-serializer = "*"
 gunicorn = "*"
 pytest ="*"
 faker="*"
-
+flask_restx="*"
 [dev-packages]
 
 [requires]
