@@ -15,6 +15,7 @@ faker="*"
 flask_restx="*"
 flask_jwt_extended="*"
 flask_cors="*"
+flask_bcrypt="*"
 [dev-packages]
 
 [requires]
