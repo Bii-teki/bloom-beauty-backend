@@ -431,6 +431,33 @@ class Invoices(Resource):
 
         return make_response(jsonify(invoices), 200)
 
+    def post(self):
+        try:
+            data = request.json
+
+            user_id = data.get('user_id')
+            product_id = data.get('product_id')
+            cost = data.get('cost')
+            quantity = data.get('quantity')
+
+            # Perform validation or additional checks if needed
+
+            new_invoice_item = Invoice(
+                user_id=user_id,
+                product_id=product_id,
+                cost=cost,
+                quantity=quantity
+            )
+
+            db.session.add(new_invoice_item)
+            db.session.commit()
+
+            return {"message": "Invoice item created successfully"}, 201
+
+        except Exception as e:
+            print(f"Error creating invoice item: {e}")
+            db.session.rollback()
+            return {"error": "Failed to create invoice item"}, 500
     
     
     
