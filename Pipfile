@@ -14,6 +14,7 @@ pytest ="*"
 faker="*"
 flask_restx="*"
 flask_jwt_extended="*"
+flask_cors="*"
 [dev-packages]
 
 [requires]
