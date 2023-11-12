@@ -101,33 +101,6 @@ class TestJWT(Resource):
 
 api.add_resource(TestJWT, '/testing')
 
-#handle the login requests
-class LoginResource(Resource):
-    def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('username', type=str, required=True)
-        parser.add_argument('password', type=str, required=True)
-        args = parser.parse_args()
-
-        user = User.query.filter_by(username=args['username']).first()
-        
-
-        if user and user.password == args['password']:
-            user_dict = {
-                "id": user.id,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "username": user.username,
-                "email": user.email,
-                "telephone": user.telephone,
-                "role": user.role
-
-            }
-            access_token = create_access_token(identity=user_dict)
-            return make_response(jsonify({"access_token": access_token, "id": user.id}), 200)
-        else:
-            return {'message': 'Invalid credentials'}, 401
-api.add_resource(LoginResource, '/login')
 
 #Admin interface for users management
 class ProfileResource(Resource):
@@ -179,7 +152,7 @@ class GetProducts(Resource):
     def get(self):
         products = []
 
-        for product in Product.query.all():
+        for product in Product.query.order_by(Product.created_at).all():
            
             category = Category.query.get(product.category)
             category_name = category.cat_name if category else None
@@ -430,7 +403,6 @@ class Invoices(Resource):
             invoices.append(invoice_dict)
 
         return make_response(jsonify(invoices), 200)
-
     def post(self):
         try:
             data = request.json
@@ -479,5 +451,37 @@ class Categories(Resource):
 api.add_resource(Categories, '/categories')
 
 
+from flask_jwt_extended import create_access_token
+
+class LoginResource(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('username', type=str, required=True)
+        parser.add_argument('password', type=str, required=True)
+        args = parser.parse_args()
+
+        user = User.query.filter_by(username=args['username']).first()
+
+        if user and user.password == args['password']:
+            user_dict = {
+                "id": user.id,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "username": user.username,
+                "email": user.email,
+                "telephone": user.telephone,
+                "city_town": user.city_town,
+                "role": user.role,
+            }
+
+            # Create an access token for the user
+            access_token = create_access_token(identity=user_dict)
+
+            # Return both the access token and user details
+            return make_response(jsonify({"access_token": access_token}), 200)
+        else:
+            return {'message': 'Invalid credentials'}, 401
+api.add_resource(LoginResource, '/login')   
+
 if __name__ == '__main__':
-    app.run(port=5556, debug=True)
+    app.run(port=5555, debug=True)
