@@ -272,11 +272,23 @@ class ProductById(Resource):
             return make_response(jsonify({"error": "Product not found"}),404)
         
     # @jwt_required()
-    def delete (self, id):
-        product = Product.query.filter_by(id=id).first()
-        db.session.delete(product)
-        db.session.commit()
-        return {'message': 'Product deleted successfully'}
+
+    def delete(self, id):
+        try:
+            product = Product.query.filter_by(id=id).first()
+    
+            if not product:
+                return {'message': 'Product not found'}, 404  # Not Found status code
+    
+            db.session.delete(product)
+            db.session.commit()
+    
+            return {'message': 'Product deleted successfully'}
+        except Exception as e:
+            print(str(e))
+            db.session.rollback()  # Rollback the transaction in case of an error
+            abort(500, {'message': 'Internal Server Error'})  # Internal Server Error status code
+
     
 api.add_resource(ProductById, '/products/<int:id>')
 
